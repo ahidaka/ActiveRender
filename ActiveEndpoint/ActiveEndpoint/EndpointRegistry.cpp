@@ -50,9 +50,9 @@ VOID EndpointRegistry::ActiveEndpoint(PWSTR DeviceGuid)
     PWSTR delimiter = (PWSTR)L"\\";
     DWORD valueLength = MAX_PATH;
     PWSTR  deviceState = (PWSTR)L"DeviceState";
-    PWSTR  level0 = (PWSTR)L"Level:0";
-    PWSTR  level1 = (PWSTR)L"Level:1";
-    PWSTR  level2 = (PWSTR)L"Level:2";
+    PWSTR  level0 = (PWSTR)L"Level:0"; // Console
+    PWSTR  level1 = (PWSTR)L"Level:1"; // Multimedia
+    PWSTR  level2 = (PWSTR)L"Level:2"; // Communication
 
     ULONG64 maxLevelmm = 0;
     ULONG64 maxLevelunkown = 0;
@@ -139,10 +139,10 @@ VOID EndpointRegistry::ActiveEndpoint(PWSTR DeviceGuid)
             }
 
             //
-            // level0:assume the default candidate for Multimedia role
+            // level1:assume the default candidate for Multimedia role
             //
             if (role == Keywords::Multimedia) {
-                result = Reg->GetValue(subKeyFullName, level0, &data64mm);
+                result = Reg->GetValue(subKeyFullName, level1, &data64mm);
                 if (result != S_OK) {
                     if (maxLevelmm == 0ULL) {
                         // default candidate
@@ -154,14 +154,14 @@ VOID EndpointRegistry::ActiveEndpoint(PWSTR DeviceGuid)
                     wcscpy_s(DeviceGuid, MAX_PATH, subKeyName);
                 }
 
-                _LD printf("mm: %ws=%llu(%llX)\n", level0, data64mm, data64mm);
+                _LD printf("mm: %ws=%llu(%llX)\n", level1, data64mm, data64mm);
             }
 
             //
             // level1: This level id for Unknown role
             //
             if (role == Keywords::Unknown) {
-				result = Reg->GetValue(subKeyFullName, level0, &data64unknown);
+				result = Reg->GetValue(subKeyFullName, level1, &data64unknown);
 				if (result != S_OK) {
 					if (maxLevelunkown == 0ULL) {
 						wcscpy_s(DeviceGuid, MAX_PATH, subKeyName);
@@ -172,14 +172,14 @@ VOID EndpointRegistry::ActiveEndpoint(PWSTR DeviceGuid)
 					wcscpy_s(DeviceGuid, MAX_PATH, subKeyName);
 				}
 
-				_LD printf("uk: %ws=%llu(%llX)\n", level0, data64unknown, data64unknown);
+				_LD printf("uk: %ws=%llu(%llX)\n", level1, data64unknown, data64unknown);
 			}
 
             //
             // level2: This level id for Communication role
             //
             if (role == Keywords::Communication) {
-                result = Reg->GetValue(subKeyFullName, level0, &data64com);
+                result = Reg->GetValue(subKeyFullName, level1, &data64com);
                 if (result != S_OK) {
                     if (maxLevelcom == 0ULL) {
                         wcscpy_s(DeviceGuid, MAX_PATH, subKeyName);

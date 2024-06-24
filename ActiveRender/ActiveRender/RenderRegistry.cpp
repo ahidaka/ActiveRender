@@ -48,8 +48,9 @@ VOID RenderRegistry::ActiveRender(PWSTR DeviceGuid)
     PWSTR delimiter = (PWSTR)L"\\";
     DWORD valueLength = MAX_PATH;
     PWSTR  deviceState = (PWSTR)L"DeviceState";
-    PWSTR  level0 = (PWSTR)L"Level:0";
-    //PWSTR  level1 = (PWSTR)L"Level:1";
+    //PWSTR  level1 = (PWSTR)L"Level:0"; // Console
+    PWSTR  level1 = (PWSTR)L"Level:1"; // Multimedia
+    //PWSTR  level2 = (PWSTR)L"Level:2"; // Communication
 
     ULONG64 maxLevel = 0;
     //WCHAR maxDevice[MAX_PATH];
@@ -114,7 +115,7 @@ VOID RenderRegistry::ActiveRender(PWSTR DeviceGuid)
                 continue;
             }
 
-            result = Reg->GetValue(subKeyFullName, level0, &data64);
+            result = Reg->GetValue(subKeyFullName, level1, &data64);
             if (result != S_OK) {
                 //PERROR(result);
                 if (maxLevel == 0ULL) {
@@ -123,7 +124,7 @@ VOID RenderRegistry::ActiveRender(PWSTR DeviceGuid)
                 }
                 continue;
             }
-            _LD printf("%ws=%llu(%llX)\n", level0, data64, data64);
+            _LD printf("%ws=%llu(%llX)\n", level1, data64, data64);
 
             if (DeviceGuid && (maxLevel <= data64)) {
                 maxLevel = data64;
